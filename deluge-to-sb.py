@@ -35,6 +35,12 @@ def remove_prefix(name):
     return name
 
 
+def link_file(source, destination_dir, name):
+    torrentname = remove_prefix(name)
+    destination = os.path.join(destination_dir, torrentname)
+    os.link(source, destination)
+
+
 # Only do stuff if the torrent is saved to one of the completed folders we want
 if os.path.split(torrentrootpath)[1] in trackers:
     torrentpath = os.path.join(torrentrootpath, torrentname)
@@ -48,13 +54,6 @@ if os.path.split(torrentrootpath)[1] in trackers:
                 ext = os.path.splitext(name)[1]
                 if ext not in excluded_extensions:
                     sourcepath = os.path.join(root, name)
-
-                    name = remove_prefix(name)
-
-                    destinationpath = os.path.join(destinationfolder, name)
-
-                    os.link(sourcepath, destinationpath)
+                    link_file(sourcepath, destinationfolder, name)
     else:
-        torrentname = remove_prefix(torrentname)
-        destinationpath = os.path.join(destinationfolder, torrentname)
-        os.link(torrentpath, destinationpath)
+        link_file(torrentpath, destinationfolder, torrentname)
